@@ -204,9 +204,21 @@ object DoubleTalkEngine {
     /**
      * Build the 0x01-command utterance prefix. Voice (nO) MUST come first:
      * it loads the voice's firmware preset, so every following parameter
-     * overrides that preset. WYSIWYG emission as in the NVDA driver: a
-     * parameter equal to the voice's own preset value is omitted so the
-     * preset shows through; only real overrides are sent.
+     * overrides that preset. Tone/articulation/expression/formant/reverb use
+     * WYSIWYG emission as in the NVDA driver: a parameter equal to the
+     * voice's own preset value is omitted so the preset shows through; only
+     * real overrides are sent.
+     *
+     * Pitch/rate/volume are NOT omitted that way even when they match the
+     * apparent default: nS/nV aren't part of the voice preset at all (nO
+     * never resets them), and nP is only reset by an nO this call may be
+     * skipping (see [skipVoice]) - so "equals the default" doesn't mean "the
+     * card is already there". A prior utterance (e.g. TalkBack speaking a
+     * link at a lowered pitch) can leave the card's register on a value
+     * this call's target doesn't match even when the target looks like the
+     * default, and omitting the command would leave the card stuck on that
+     * stale value. Always sending them keeps the card's actual state in
+     * sync with each request.
      *
      * [rate]/[pitch] are Android TTS units (100 = normal); the voice-quality
      * values are card-native with -1 meaning "leave at voice preset".
@@ -233,10 +245,10 @@ object DoubleTalkEngine {
         val sb = StringBuilder()
         if (!skipVoice) sb.append('\u0001').append(v).append('O')
         val nS = mapRate(rate)
-        if (nS != 5) sb.append('\u0001').append(nS).append('S')
+        sb.append('\u0001').append(nS).append('S')
         val nP = mapPitch(pitch, preset[0])
-        if (nP != preset[0]) sb.append('\u0001').append(nP).append('P')
-        if (volume in 0..9 && volume != 5) sb.append('\u0001').append(volume).append('V')
+        sb.append('\u0001').append(nP).append('P')
+        sb.append('\u0001').append(if (volume in 0..9) volume else 5).append('V')
         if (tone in 0..2 && tone != preset[3]) sb.append('\u0001').append(tone).append('X')
         if (articulation in 0..9 && articulation != preset[1])
             sb.append('\u0001').append(articulation).append('A')
