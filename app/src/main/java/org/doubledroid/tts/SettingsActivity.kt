@@ -128,6 +128,15 @@ class SettingsActivity : Activity() {
             prefs.edit().putInt(DoubleTalkEngine.PREF_TONE, pos - 1).apply()
         }
 
+        // Collapse runs of 3+ identical emoji into a count instead of
+        // speaking each one - see Emoji.describe.
+        val emojiCollapse = findViewById<Switch>(R.id.emoji_collapse_repeats)
+        emojiCollapse.isChecked =
+            prefs.getBoolean(DoubleTalkEngine.PREF_EMOJI_COLLAPSE_REPEATS, true)
+        emojiCollapse.setOnCheckedChangeListener { _, checked ->
+            prefs.edit().putBoolean(DoubleTalkEngine.PREF_EMOJI_COLLAPSE_REPEATS, checked).apply()
+        }
+
         findViewById<Button>(R.id.speak_button).setOnClickListener { startTestSpeech() }
         findViewById<Button>(R.id.stop_button).setOnClickListener { stopTestSpeech() }
     }

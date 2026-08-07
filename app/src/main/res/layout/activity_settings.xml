@@ -180,6 +180,13 @@
             android:layout_height="wrap_content"
             android:max="10" />
 
+        <Switch
+            android:id="@+id/emoji_collapse_repeats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/emoji_collapse_repeats_label" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -28,6 +28,7 @@
     <string name="pause_short">Short</string>
     <string name="pause_shorter">Shorter</string>
     <string name="pause_shortest">Shortest</string>
+    <string name="emoji_collapse_repeats_label">Count repeated emoji (e.g. 😂😂😂😂😂 speaks as 5 face with tears of joy)</string>
 
     <string name="quality_section">Voice quality</string>
     <string name="quality_hint">Auto follows the selected voice\'s own firmware preset.</string>
